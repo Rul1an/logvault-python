@@ -10,16 +10,16 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="logvault",
-    version="0.2.2",
+    version="0.2.3",
     author="LogVault",
-    author_email="support@logvault.io",
+    author_email="support@logvault.eu",
     description="Audit-Log-as-a-Service client library",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Rul1an/LogVault",
     project_urls={
         "Bug Tracker": "https://github.com/Rul1an/LogVault/issues",
-        "Documentation": "https://logvault.io/docs",
+        "Documentation": "https://logvault.app/docs",
         "Source Code": "https://github.com/Rul1an/LogVault",
     },
     packages=find_packages(),

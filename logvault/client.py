@@ -21,7 +21,7 @@ try:
     from importlib.metadata import version
     __version__ = version("logvault")
 except ImportError:
-    __version__ = "0.2.2-dev"
+    __version__ = "0.2.3-dev"
 
 # Regex for "domain.event" format
 ACTION_REGEX = re.compile(r"^[a-z0-9_]+(\.[a-z0-9_]+)+$", re.IGNORECASE)
@@ -122,6 +122,138 @@ class Client:
             # Clean Error Message
             raise APIError(f"LogVault Connection Error: {type(e).__name__}") from e
 
+    def list_events(
+        self,
+        page: int = 1,
+        page_size: int = 50,
+        user_id: Optional[str] = None,
+        action: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        List audit events with optional filtering.
+
+        Args:
+            page: Page number (1-indexed)
+            page_size: Number of events per page (max 100)
+            user_id: Filter by user ID
+            action: Filter by action (supports wildcards with *)
+
+        Returns:
+            Dict with 'events', 'total', 'page', 'page_size', 'has_next'
+        """
+        params = {
+            "page": page,
+            "page_size": min(page_size, 100)
+        }
+        if user_id:
+            params["user_id"] = user_id
+        if action:
+            params["action"] = action
+
+        try:
+            response = self.session.get(
+                f"{self.base_url}/v1/events",
+                params=params,
+                timeout=self.timeout
+            )
+
+            if response.status_code == 401:
+                raise AuthenticationError("Invalid API key")
+
+            response.raise_for_status()
+            return response.json()
+
+        except requests.exceptions.RequestException as e:
+            raise APIError(f"LogVault Connection Error: {type(e).__name__}") from e
+
+    def get_event(self, event_id: str) -> Dict[str, Any]:
+        """
+        Get a single audit event by ID.
+
+        Args:
+            event_id: The UUID of the event
+
+        Returns:
+            Dict with event details
+        """
+        try:
+            response = self.session.get(
+                f"{self.base_url}/v1/events/{event_id}",
+                timeout=self.timeout
+            )
+
+            if response.status_code == 401:
+                raise AuthenticationError("Invalid API key")
+            if response.status_code == 404:
+                raise APIError(f"Event not found: {event_id}")
+
+            response.raise_for_status()
+            return response.json()
+
+        except requests.exceptions.RequestException as e:
+            raise APIError(f"LogVault Connection Error: {type(e).__name__}") from e
+
+    def verify_event(self, event_id: str) -> Dict[str, Any]:
+        """
+        Verify the cryptographic signature of an audit event.
+
+        Args:
+            event_id: The UUID of the event to verify
+
+        Returns:
+            Dict with 'valid' (bool) and verification details
+        """
+        try:
+            response = self.session.get(
+                f"{self.base_url}/v1/events/{event_id}/verify",
+                timeout=self.timeout
+            )
+
+            if response.status_code == 401:
+                raise AuthenticationError("Invalid API key")
+            if response.status_code == 404:
+                raise APIError(f"Event not found: {event_id}")
+
+            response.raise_for_status()
+            return response.json()
+
+        except requests.exceptions.RequestException as e:
+            raise APIError(f"LogVault Connection Error: {type(e).__name__}") from e
+
+    def search_events(
+        self,
+        query: str,
+        limit: int = 20
+    ) -> Dict[str, Any]:
+        """
+        Search audit events using semantic search.
+
+        Args:
+            query: Natural language search query (e.g., "failed login attempts")
+            limit: Maximum number of results (default 20)
+
+        Returns:
+            Dict with 'results', 'count', 'has_embeddings'
+        """
+        if len(query) < 2:
+            raise ValidationError("Query must be at least 2 characters")
+
+        try:
+            response = self.session.get(
+                f"{self.base_url}/v1/events/search",
+                params={"q": query, "limit": limit},
+                timeout=self.timeout
+            )
+
+            if response.status_code == 401:
+                raise AuthenticationError("Invalid API key")
+
+            response.raise_for_status()
+            return response.json()
+
+        except requests.exceptions.RequestException as e:
+            raise APIError(f"LogVault Connection Error: {type(e).__name__}") from e
+
 class AsyncClient:
     def __init__(
         self,
@@ -201,3 +333,49 @@ class AsyncClient:
                 # Exponential Backoff + Jitter
                 delay = (2 ** attempt) + (random.randint(0, 1000) / 1000)
                 await asyncio.sleep(delay)
+
+    async def list_events(
+        self,
+        page: int = 1,
+        page_size: int = 50,
+        user_id: Optional[str] = None,
+        action: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        List audit events with optional filtering (async).
+        """
+        if not self._session:
+            self._session = aiohttp.ClientSession(headers=self.headers, timeout=self.timeout)
+
+        params = {"page": page, "page_size": min(page_size, 100)}
+        if user_id:
+            params["user_id"] = user_id
+        if action:
+            params["action"] = action
+
+        async with self._session.get(f"{self.base_url}/v1/events", params=params) as response:
+            if response.status == 401:
+                raise AuthenticationError("Invalid API key")
+            if response.status != 200:
+                raise APIError(f"HTTP {response.status}")
+            return await response.json()
+
+    async def search_events(self, query: str, limit: int = 20) -> Dict[str, Any]:
+        """
+        Search audit events using semantic search (async).
+        """
+        if not self._session:
+            self._session = aiohttp.ClientSession(headers=self.headers, timeout=self.timeout)
+
+        if len(query) < 2:
+            raise ValidationError("Query must be at least 2 characters")
+
+        async with self._session.get(
+            f"{self.base_url}/v1/events/search",
+            params={"q": query, "limit": limit}
+        ) as response:
+            if response.status == 401:
+                raise AuthenticationError("Invalid API key")
+            if response.status != 200:
+                raise APIError(f"HTTP {response.status}")
+            return await response.json()
