@@ -1,16 +1,17 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=77.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "logvault"
-version = "0.2.2"
+version = "0.2.3"
 description = "Audit-Log-as-a-Service client library"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
+# Modern SPDX license expression (required by Feb 2026)
+license = "MIT"
 authors = [
-    {name = "LogVault", email = "support@logvault.io"}
+    {name = "LogVault", email = "support@logvault.eu"}
 ]
 keywords = ["audit", "logging", "compliance", "soc2", "gdpr", "iso27001", "security"]
 classifiers = [
@@ -19,13 +20,13 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: System :: Logging",
     "Topic :: Security",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "requests>=2.31.0",
@@ -35,7 +36,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
+    "pytest-asyncio>=0.23.0",
     "black>=23.0.0",
     "mypy>=1.0.0",
 ]
@@ -49,10 +50,14 @@ Changelog = "https://github.com/Rul1an/logvault-python/blob/main/CHANGELOG.md"
 
 [tool.black]
 line-length = 100
-target-version = ["py38", "py39", "py310", "py311", "py312"]
+target-version = ["py38", "py39", "py310", "py311", "py312", "py313"]
 
 [tool.mypy]
 python_version = "3.8"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
