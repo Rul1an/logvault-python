@@ -21,7 +21,7 @@ try:
     from importlib.metadata import version
     __version__ = version("logvault")
 except ImportError:
-    __version__ = "0.2.4-dev"
+    __version__ = "0.2.5-dev"
 
 # Regex for "domain.event" format
 ACTION_REGEX = re.compile(r"^[a-z0-9_]+(\.[a-z0-9_]+)+$", re.IGNORECASE)

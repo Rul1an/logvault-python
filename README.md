@@ -105,12 +105,12 @@ client = Client(
 
 Actions follow the pattern `entity.verb`:
 
-| Category | Examples |
-|----------|----------|
-| Auth | `user.login`, `user.logout`, `user.password_reset` |
-| Documents | `document.create`, `document.read`, `document.delete` |
+| Category    | Examples                                               |
+| ----------- | ------------------------------------------------------ |
+| Auth        | `user.login`, `user.logout`, `user.password_reset`     |
+| Documents   | `document.create`, `document.read`, `document.delete`  |
 | Permissions | `permission.grant`, `permission.revoke`, `role.assign` |
-| Data | `data.export`, `data.delete` |
+| Data        | `data.export`, `data.delete`                           |
 
 ## Requirements
 

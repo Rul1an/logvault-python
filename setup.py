@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="logvault",
-    version="0.2.4",
+    version="0.2.5",
     author="LogVault",
     author_email="support@logvault.eu",
     description="Audit-Log-as-a-Service client library",
