@@ -4,7 +4,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/logvault.svg)](https://pypi.org/project/logvault/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Official Python client for [LogVault](https://logvault.app) — Audit-Log-as-a-Service for B2B SaaS. SOC 2, GDPR, and ISO 27001 compliant. Hosted in the EU.
+Official Python client for [LogVault](https://logvault.eu) — Audit-Log-as-a-Service for B2B SaaS. SOC 2, GDPR, and ISO 27001 compliant. Hosted in the EU.
 
 ## Installation
 
@@ -120,8 +120,8 @@ Actions follow the pattern `entity.verb`:
 
 ## Links
 
-- [Documentation](https://logvault.app/docs)
-- [API Reference](https://logvault.app/docs/api)
+- [Documentation](https://logvault.eu/docs)
+- [API Reference](https://logvault.eu/docs/api)
 - [GitHub](https://github.com/Rul1an/logvault-python)
 - [PyPI](https://pypi.org/project/logvault/)
 

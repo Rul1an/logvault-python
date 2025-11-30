@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="logvault",
-    version="0.2.3",
+    version="0.2.4",
     author="LogVault",
     author_email="support@logvault.eu",
     description="Audit-Log-as-a-Service client library",
@@ -19,7 +19,7 @@ setup(
     url="https://github.com/Rul1an/LogVault",
     project_urls={
         "Bug Tracker": "https://github.com/Rul1an/LogVault/issues",
-        "Documentation": "https://logvault.app/docs",
+        "Documentation": "https://logvault.eu/docs",
         "Source Code": "https://github.com/Rul1an/LogVault",
     },
     packages=find_packages(),
